@@ -1,1 +1,5 @@
 .DS_Store
+nvbitfi/*.h5
+*.onnx
+*.trt
+*.zip

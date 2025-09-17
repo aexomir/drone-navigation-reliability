@@ -10,19 +10,19 @@ DEBUG = 1
 # enable jetson nano watchdog: $ echo Y > /sys/kernel/debug/gpu.0/timeouts_enabled
 
 class TRT_load_embeddings:
-    def __init__(self, path_dir, layer_number, batch_size=1, layer_output_shape=(1,)) -> None:
+    def __init__(self, path_dir, batch_size=1, layer_output_shape=(1,)) -> None:
         self.target_dtype = np.float32
         current_path = os.path.dirname(__file__)
         self.path_dir = os.path.join(current_path, path_dir)
         self.batch_size = batch_size
         self.layer_results = []
-        self.layer_number = layer_number
-        self.onnx_model_name = "Layer_pytorch.onnx"
-        self.TRT_model_name = "Layer_pytorch.trt"
+
+        self.onnx_model_name = "model_final.onnx"
+        self.TRT_model_name = "model_final.trt"
         self.TRT_output_shape = layer_output_shape
 
         # --- Load input datasets (img + vec) ---
-        dataset_file = os.path.join(self.path_dir, "inputs_layer.h5")
+        dataset_file = os.path.join(self.path_dir, "inputs.h5")
         with h5py.File(dataset_file, "r") as hf:
             self.Input_img = np.array(hf["img"], dtype=np.float32)
             self.Input_vec = np.array(hf["vec"], dtype=np.float32)
@@ -103,6 +103,6 @@ class TRT_load_embeddings:
         if DEBUG:
             print("Final output shape:", embeddings_outputs.shape)
 
-        log_path_file = os.path.join(self.path_dir, "Output_layer.h5")
+        log_path_file = os.path.join(self.path_dir, "outputs.h5")
         with h5py.File(log_path_file, "w") as hf:
             hf.create_dataset("layer_output", data=embeddings_outputs, compression="gzip")

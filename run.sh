@@ -1,8 +1,8 @@
 #!/bin/bash
-BIN_DIR="/home/aexo/jetson_lenet"
+BIN_DIR="/home/aexo/DNR"
 APP_BIN="Run_Layer.py"
 GOLDEN_FLAG=1
-APP_DIR="/home/aexo/jetson_lenet"
+APP_DIR="/home/aexo/DNR"
 
 APP_ARGS=$*
 NEW_VAR=("$@")
@@ -10,8 +10,8 @@ NEW_VAR=("$@")
 #source ~/miniconda3/etc/profile.d/conda.sh
 #conda activate Pytorch_nvbitPERfi
 
-# python Run_Layer.py -n LeNet -ln 1 -bs 1 -onnx
-# python Run_Layer.py -n LeNet -ln 0 -bs 1 -trt -sz 1 6 28 28
+# python Run_Layer.py -n LeNet -bs 1 -onnx
+# python Run_Layer.py -n LeNet -bs 1 -trt -sz 1 6 28 28
 
 eval ${PRELOAD_FLAG} python3 ${BIN_DIR}/${APP_BIN} ${APP_ARGS} > stdout.txt 2> stderr.txt
 
@@ -55,7 +55,7 @@ then
         esac
     done
 
-    mv ${APP_DIR}/${TYPE}/${NAME}-ln${NUM}/Output_layer.h5 ${APP_DIR}/${TYPE}/${NAME}-ln${NUM}/Golden_Output_layer.h5 
+    mv ${APP_DIR}/${TYPE}/${NAME}/outputs.h5 ${APP_DIR}/${TYPE}/${NAME}/golden_outputs.h5
 
 fi
 
