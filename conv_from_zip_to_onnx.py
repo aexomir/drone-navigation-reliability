@@ -1,3 +1,10 @@
+#####
+
+# RUN THIS SCRIPT ONLY ON WORK-STATION
+
+#####
+
+
 import os
 import argparse
 import traceback
@@ -12,9 +19,9 @@ import gymnasium as gym
 import numpy as np
 
 # --- Configuration ---
-MODEL_ZIP_PATH        = "./model_final.zip"
-ONNX_MODEL_PATH       = "model_final.onnx"
-TENSORRT_ENGINE_PATH  = "model_final.trt"
+MODEL_ZIP_PATH        = "nvbitfi/model_final.zip"
+ONNX_MODEL_PATH       = "nvbitfi/model_final.onnx"
+TENSORRT_ENGINE_PATH  = "nvbitfi/model_final.trt"
 SB3_ALGORITHM_CLASS   = sb3.DQN
 TRT_LOGGER            = trt.Logger(trt.Logger.WARNING)
 MAX_WORKSPACE_SIZE    = 1 << 30
@@ -141,8 +148,7 @@ if __name__ == "__main__":
             policy_wrapper = PolicyWrapper(model.policy.q_net)
             img =torch.tensor(np.random.rand(32,4,36,64))
             vec = torch.tensor(np.random.rand(32,12,1))
-            output = policy_wrapper(img, vec)
-            # print(output.shape)
+            output = policy_wrapper(img,vec)
             policy_wrapper.eval()
             print("Using PolicyWrapper for ONNX export.")
 
