@@ -112,7 +112,9 @@ class PolicyWrapper(nn.Module):
     def forward(self, img, vec):
         obs_dict = OrderedDict([('img', img), ('vec', vec)])
         # For DQN, calling the policy returns Q-values
-        return self.policy(obs_dict)
+        # AEXO-prev: return self.policy(obs_dict)
+        result = torch.argmax(self.policy(obs_dict), dim=1)
+        return result
 
 # --- Main Conversion Script ---
 if __name__ == "__main__":
@@ -135,7 +137,8 @@ if __name__ == "__main__":
             print("Model loaded successfully.")
 
             # Wrap policy for ONNX export
-            policy_wrapper = PolicyWrapper(model.policy)
+            # AEXO-PREV: PolicyWrapper(model.policy)
+            policy_wrapper = PolicyWrapper(model.policy.q_net)
             img =torch.tensor(np.random.rand(32,4,36,64))
             vec = torch.tensor(np.random.rand(32,12,1))
             output = policy_wrapper(img, vec)
@@ -165,16 +168,16 @@ if __name__ == "__main__":
                 policy_wrapper,
                 dummy_inputs,
                 ONNX_MODEL_PATH,
-                export_params=True,
-                opset_version=11,
-                do_constant_folding=True,
-                input_names=names,
-                output_names=["output_actions"],
-                dynamic_axes={
-                    "img": {0: "batch_size"},
-                    "vec": {0: "batch_size"},
-                    "output_actions": {0: "batch_size"}
-                }
+                # export_params=True,
+                # opset_version=11,
+                # do_constant_folding=True,
+                # input_names=names,
+                # output_names=["output_actions"],
+                # dynamic_axes={
+                #     "img": {0: "batch_size"},
+                #     "vec": {0: "batch_size"},
+                #     "output_actions": {0: "batch_size"}
+                # }
             )
             print("ONNX export complete.")
             check_onnx_model(ONNX_MODEL_PATH)
