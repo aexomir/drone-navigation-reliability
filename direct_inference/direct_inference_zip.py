@@ -1,27 +1,34 @@
-import h5py
+import os
 import numpy as np
-from stable_baselines3 import PPO  # or A2C, SAC, etc. — depends on your model
+import h5py
+from stable_baselines3 import DQN
 
-# Path to your saved model
-model_path = "model_final.zip"
+# --- Configuration ---
+MODEL_PATH = "../nvbitfi/model_final.zip"
+H5_INPUT_PATH = "inputs.h5"
 
-# Load SB3 model
-model = PPO.load(model_path)  # replace PPO with the correct algo
+# --- 1. Load the model ---
+try:
+    # Use the correct SB3 algorithm class here (PPO, A2C, SAC, etc.)
+    model = DQN.load(MODEL_PATH)
+    print(f"✅ Successfully loaded SB3 model from {MODEL_PATH}.")
+except Exception as e:
+    print(f"❌ Error loading model. Ensure {MODEL_PATH} exists and is a valid SB3 zip file, and the correct algorithm class is used.")
+    print(f"Error details: {e}")
+    exit()
 
-# Load your inputs
-with h5py.File("inputs.h5", "r") as hf:
-    Input_img = np.array(hf["img"], dtype=np.float32)   # shape (4, 4, 36, 64)
-    Input_vec = np.array(hf["vec"], dtype=np.float32)   # shape (4, 12)
+with h5py.File(H5_INPUT_PATH, 'r') as hf:
+    img_data = hf['img'][:].astype(np.float32)
+    vec_data = hf['vec'][:].astype(np.float32)
 
-# SB3 expects a single observation that matches its training space
-# Since your model was trained with a dict observation {"img":..., "vec":...},
-# you need to pass that format.
-obs = {
-    "img": Input_img[0],   # one sample
-    "vec": Input_vec[0]
+print(f"  - img shape: {img_data.shape}, dtype: {img_data.dtype}")
+print(f"  - vec shape: {vec_data.shape}, dtype: {vec_data.dtype}")
+
+observation_batch = {
+    "img": img_data,
+    "vec": vec_data,
 }
 
-# Run inference
-action, _states = model.predict(obs, deterministic=True)
+actions, _ = model.predict(observation_batch, deterministic=True)
 
-print("Predicted action:", action)
+print(actions)
