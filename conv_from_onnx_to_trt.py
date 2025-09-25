@@ -57,21 +57,21 @@ def build_tensorrt_engine(onnx_path, engine_path, logger, workspace_size, use_fp
     print(f"Network outputs: {[network.get_output(i).name for i in range(network.num_outputs)]}")
 
     # Define an optimization profile for dynamic batch sizes
-    # profile = builder.create_optimization_profile()
+    profile = builder.create_optimization_profile()
     # Here: “img” shape is [batch, 4, 36, 64], “vec” is [batch, 12]
-    # profile.set_shape(
-    #     "img",
-    #     min=(1, 4, 36, 64),
-    #     opt=(4, 4, 36, 64),
-    #     max=(8, 4, 36, 64),
-    # )
-    # profile.set_shape(
-    #     "vec",
-    #     min=(1, 12),
-    #     opt=(4, 12),
-    #     max=(8, 12),
-    # )
-    # config.add_optimization_profile(profile)
+    profile.set_shape(
+        "img",
+        min=(1, 4, 36, 64),
+        opt=(4, 4, 36, 64),
+        max=(8, 4, 36, 64),
+    )
+    profile.set_shape(
+        "vec",
+        min=(1, 12),
+        opt=(4, 12),
+        max=(8, 12),
+    )
+    config.add_optimization_profile(profile)
 
     print("Building TensorRT engine (this may take a while)...")
     plan = None
