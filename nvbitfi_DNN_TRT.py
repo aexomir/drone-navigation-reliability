@@ -1,3 +1,6 @@
+# NOTE: This file is not fully my own work. It builds on an existing DNN
+# fault-injection harness that I did not write; the original repository
+# belongs to someone else. Add the upstream link and license here.
 import os
 import h5py
 import numpy as np
