@@ -1,1 +1,6 @@
 .DS_Store
+__pycache__/
+*.pyc
+*.h5
+stdout.txt
+stderr.txt
