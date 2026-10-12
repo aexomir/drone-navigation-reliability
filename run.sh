@@ -1,8 +1,8 @@
 #!/bin/bash
-BIN_DIR="/home/aexo/jetson_lenet"
+APP_DIR="${APP_DIR:-$(cd "$(dirname "$0")" && pwd)}"
+BIN_DIR="$APP_DIR"
 APP_BIN="Run_Layer.py"
 GOLDEN_FLAG=1
-APP_DIR="/home/aexo/jetson_lenet"
 
 APP_ARGS=$*
 NEW_VAR=("$@")
